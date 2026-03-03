@@ -1,0 +1,5 @@
+.claude
+target/
+Cargo.lock
+grammars/
+extension.wasm
