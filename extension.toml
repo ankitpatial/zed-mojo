@@ -12,4 +12,4 @@ commit = "564d5a8489e20e5f723020ae40308888699055c0"
 
 [language_servers.mojo-lsp-server]
 name = "Mojo Language Server"
-language = "Mojo"
+languages = ["Mojo"]

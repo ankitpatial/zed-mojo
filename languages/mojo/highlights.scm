@@ -50,6 +50,11 @@
 (function_definition
   name: (identifier) @function.definition)
 
+; Magic/dunder methods (aligned with VS Code Mojo extension)
+(function_definition
+  name: (identifier) @function.special.definition
+  (#match? @function.special.definition "^__[a-zA-Z][a-zA-Z0-9_]*__$"))
+
 ; Function parameters
 (function_definition
   parameters: (parameters
@@ -93,13 +98,10 @@
 ] @number
 
 ; Self references
-[
-  (parameters
-    (identifier) @variable.special)
-  (attribute
-    (identifier) @variable.special)
-  (#any-of? @variable.special "self" "Self")
-]
+(self_parameter) @variable.special
+
+((identifier) @variable.special
+  (#any-of? @variable.special "self" "Self"))
 
 ; Punctuation
 [
@@ -193,7 +195,9 @@
   "and"
   "in"
   "is"
+  "is not"
   "not"
+  "not in"
   "or"
 ] @keyword.operator
 
@@ -237,6 +241,8 @@
   "mut"
   "out"
   "read"
+  "exec"
+  "inferred"
 ] @keyword
 
 ; Definition keywords (highlighted distinctly from regular keywords)
@@ -247,34 +253,49 @@
   "struct"
   "trait"
   "lambda"
+  "type"
 ] @keyword.definition
 
-; Builtin types
+; Builtin types (aligned with official VS Code Mojo extension + Mojo stdlib)
 [
   (call
     function: (identifier) @type.builtin)
   (type
     (identifier) @type.builtin)
   (#any-of? @type.builtin
+    ; Python builtins (from VS Code extension)
+    "bool" "bytearray" "bytes" "classmethod" "complex" "dict"
+    "float" "frozenset" "int" "list" "memoryview" "object"
+    "property" "set" "slice" "staticmethod" "str" "tuple" "type"
+    "super" "range"
+    ; Mojo MLIR builtins (from VS Code extension)
+    "__mlir_attr" "__mlir_op" "__mlir_type"
+    ; Mojo stdlib types
     "Bool" "Int" "Int8" "Int16" "Int32" "Int64"
     "UInt8" "UInt16" "UInt32" "UInt64"
     "Float16" "Float32" "Float64"
     "String" "StringLiteral" "StringRef"
     "DType" "Tensor" "List" "Dict" "Set" "Tuple"
     "SIMD" "DynamicVector" "InlinedFixedVector"
-    "Pointer" "AnyType" "NoneType"
-    "bool" "int" "float" "str" "object"
-    "list" "dict" "set" "tuple" "range")
+    "Pointer" "AnyType" "NoneType" "Never"
+    "UnsafeUnion" "CStringSlice" "EllipsisType")
 ]
 
-; Builtin functions
+; Builtin functions (aligned with official VS Code Mojo extension)
 ((call
   function: (identifier) @function.builtin)
   (#any-of? @function.builtin
-    "abs" "all" "any" "bin" "bool" "chr" "dict" "dir" "divmod"
-    "enumerate" "float" "hash" "hex" "id" "int" "isinstance"
-    "issubclass" "iter" "len" "list" "map" "max" "min" "next"
-    "object" "oct" "ord" "pow" "print" "range" "repr" "reversed"
-    "round" "set" "slice" "sorted" "str" "sum" "super" "tuple"
-    "type" "vars" "zip"
-    "rebind" "constrained" "parameter" "autotune"))
+    ; Python builtins
+    "__import__" "abs" "aiter" "all" "any" "anext" "ascii" "bin"
+    "bool" "breakpoint" "callable" "chr" "compile" "complex"
+    "delattr" "dict" "dir" "divmod" "enumerate" "eval" "exec"
+    "exit" "filter" "float" "format" "frozenset" "getattr"
+    "globals" "hasattr" "hash" "help" "hex" "id" "input" "int"
+    "isinstance" "issubclass" "iter" "len" "list" "locals" "map"
+    "max" "memoryview" "min" "next" "object" "oct" "open" "ord"
+    "pow" "print" "quit" "range" "repr" "reversed" "round" "set"
+    "setattr" "slice" "sorted" "str" "sum" "super" "tuple" "type"
+    "vars" "zip"
+    ; Mojo-specific builtins
+    "rebind" "constrained" "parameter" "autotune"
+    "__mlir_attr" "__mlir_op" "__mlir_type"))

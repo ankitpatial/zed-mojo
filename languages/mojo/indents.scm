@@ -31,3 +31,7 @@
 (except_clause) @start.except
 
 (finally_clause) @start.finally
+
+(match_statement) @start.match
+
+(case_clause) @start.case

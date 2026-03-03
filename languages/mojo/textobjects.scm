@@ -5,3 +5,6 @@
 
 (class_definition
   body: (_) @class.inside) @class.around
+
+(trait_definition
+  body: (_) @class.inside) @class.around
