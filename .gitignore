@@ -4,3 +4,4 @@ target/
 Cargo.lock
 grammars/
 extension.wasm
+/test
